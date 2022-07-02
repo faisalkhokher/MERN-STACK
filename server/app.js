@@ -1,11 +1,14 @@
+require('dotenv').config()
  const express = require('express');
  const mongoose = require('mongoose');
 
 
  const app = express();
  
- var username = encodeURIComponent(".UwfCg63JH#Z64D");
- const DB = 'mongodb+srv://mern:OaB3FKnUMLHoYu9h@cluster0.rvo3s.mongodb.net/mern?retryWrites=true&w=majority';
+ const PORT = process.env.PORT;
+ const mongo_dns = process.env.MONGO_DNS;
+
+ const DB = mongo_dns;
 
  mongoose.connect(DB , { 
         // useNewUrlParser: true,
@@ -18,8 +21,8 @@
     console.log(err);
  });
 
- app.listen(3000 , ()=> {
-     console.log("Server is running on port 3000");
+ app.listen(PORT , ()=> {
+     console.log(`Server is running on port ${PORT}`);
  });
 
  // Middleware 

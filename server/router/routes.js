@@ -4,12 +4,14 @@ const db = require('../DB/conn');
 const User  = require('../model/userSchema');
 const Task  = require('../model/taskSchema');
 
+const bcrypt = require('bcrypt');
 
-router.get('/', (req, res) => {
+
+router.get('/',  (req, res) => {
     res.send('Hello World');
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async(req, res) => {
   
     const {name , email , phone , work , password , cpassword , created_at} = req.body;
 
@@ -33,6 +35,11 @@ router.post('/register', (req, res) => {
         created_at : new Date()
     });
 
+    // generate salt to hash password
+    const salt = await bcrypt.genSalt(10);
+    // now we set user password to hashed password
+    UserObj.password = await bcrypt.hash(password, salt);
+    UserObj.cpassword = await bcrypt.hash(password, salt);
     UserObj.save();
     return res.status(200).json({message : "User created successfully"});
 });
@@ -89,24 +96,21 @@ router.post('/login' , async (req,res) => {
     
    try {
     const userObj = await User.findOne({email: email});
+ 
     if(!userObj)
     {
         res.status(400).json({error : "User not found"});
     }
     else
     {
-        // just check hash password is correct
-        if(userObj.password === password)
+        const match = await bcrypt.compare(password, userObj.password);
+        if(!match)
         {
-            res.status(200).json({message : "Login successful"});
-        }
-        else
-        {
-            res.status(400).json({error : "Password is incorrect"});
+            return res.status(404).json({error : "Password is incorrect"});
         }
     }
 
-
+    return res.status(200).json({message : "Login successful"});    
    } catch (error) {
          res.status(400).json({error : error.message});
    }

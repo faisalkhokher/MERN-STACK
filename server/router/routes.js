@@ -109,7 +109,12 @@ router.post('/login' , async (req,res) => {
     //   );
     //   // save user token
     // user.token = token;
-  
+    
+ 
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      expires : new Date(Date.now() + 1000 * 60 * 60 * 2),
+    })
     console.log(token);
  
     if(!userObj)

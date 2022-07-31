@@ -1,6 +1,7 @@
 require('dotenv').config()
  const express = require('express');
  const mongoose = require('mongoose');
+ const cookieParser = require("cookie-parser");
  // call express
  const app = express();
  
@@ -9,6 +10,7 @@ require('dotenv').config()
  
  //  Connect to router
  app.use(require('./router/routes'));
+ app.use(cookieParser());
  
  const PORT = process.env.PORT;
  

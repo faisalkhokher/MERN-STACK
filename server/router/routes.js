@@ -96,6 +96,21 @@ router.post('/login' , async (req,res) => {
     
    try {
     const userObj = await User.findOne({email: email});
+
+    // Create JWT token
+    const token  = await userObj.generateAuthToken();
+    // if not using token
+    // const token = jwt.sign(
+    //     { user_id: user._id, email },
+    //     process.env.TOKEN_KEY,
+    //     {
+    //       expiresIn: "2h",
+    //     }
+    //   );
+    //   // save user token
+    // user.token = token;
+  
+    console.log(token);
  
     if(!userObj)
     {
